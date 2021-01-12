@@ -1,0 +1,2 @@
+# library
+qt game libraries
