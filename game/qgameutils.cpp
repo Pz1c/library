@@ -16,7 +16,7 @@ void QGameUtils::initRand(uint seed) {
 
     _is_seed_set = true;
     _seed = seed;
-    QRandomGenerator::global()->seed(_seed);
+    //QRandomGenerator::global()->seed(_seed);
 }
 
 int QGameUtils::rand(int min, int max) {
