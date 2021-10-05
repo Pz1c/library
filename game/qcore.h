@@ -5,6 +5,9 @@
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QtNetwork/QSslConfiguration>
+#include <QtNetwork/QSslSocket>
+#include <QtGlobal>
 #include <QSettings>
 #include <QFile>
 #include <QTextStream>
@@ -46,13 +49,15 @@ signals:
     void uuidChanged();
     void isLoadingChanged();
 
-public slots:
+protected slots:
 
     // NAT
-    void slotReadyRead();
-    void slotError(QNetworkReply::NetworkError error);
-    void slotSslErrors(QList<QSslError> error_list);
-protected slots:
+    virtual void slotReadyRead();
+    virtual void slotError(QNetworkReply::NetworkError error);
+    virtual void slotSslErrors(QList<QSslError> error_list);
+
+    void sendPostRequest(const QString &url, const QByteArray &data);
+    void sendGetRequest(const QString &url);
 
 protected:
     void init();
@@ -96,6 +101,7 @@ protected:
     QNetworkAccessManager _nam;
     QNetworkReply *_reply;
     QNetworkProxy _proxy;
+    QList<QSslError> ignoredSslErrors;
 
     void applyProxySettings();
     void saveRequest(QString &data);

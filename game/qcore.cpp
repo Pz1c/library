@@ -4,6 +4,15 @@ QGameCore::QGameCore(QObject *parent) :
     QObject(parent)
 {
     _requestIdx = 0;
+
+    ignoredSslErrors.clear();
+    ignoredSslErrors.append(QSslError(QSslError::CertificateSignatureFailed));
+    ignoredSslErrors.append(QSslError(QSslError::CertificateNotYetValid));
+    ignoredSslErrors.append(QSslError(QSslError::CertificateExpired));
+    ignoredSslErrors.append(QSslError(QSslError::SelfSignedCertificate));
+    ignoredSslErrors.append(QSslError(QSslError::SelfSignedCertificateInChain));
+    ignoredSslErrors.append(QSslError(QSslError::UnableToGetLocalIssuerCertificate));
+    ignoredSslErrors.append(QSslError(QSslError::HostNameMismatch));
 }
 
 QGameCore::~QGameCore() {
@@ -59,6 +68,32 @@ void QGameCore::slotError(QNetworkReply::NetworkError error) {
 void QGameCore::slotSslErrors(QList<QSslError> error_list) {
     qDebug() << "slotSslErrors " << error_list;
 }
+
+void QGameCore::sendPostRequest(const QString &url, const QByteArray &data) {
+    QNetworkRequest request;
+    request.setUrl(QUrl(url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/x-www-form-urlencoded"));
+    request.setSslConfiguration(QSslConfiguration::defaultConfiguration());
+    _reply = _nam.post(request, data);
+    //_reply->ignoreSslErrors(ignoredSslErrors);
+    _reply->ignoreSslErrors();
+    connect(_reply, SIGNAL(finished()), this, SLOT(slotReadyRead()));
+    connect(_reply, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(slotError(QNetworkReply::NetworkError)));
+    connect(_reply, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotSslErrors(QList<QSslError>)));
+}
+
+void QGameCore::sendGetRequest(const QString &url) {
+    QNetworkRequest request;
+    request.setUrl(QUrl(url));
+    request.setSslConfiguration(QSslConfiguration::defaultConfiguration());
+    _reply = _nam.get(request);
+    //_reply->ignoreSslErrors(ignoredSslErrors);
+    _reply->ignoreSslErrors();
+    connect(_reply, SIGNAL(finished()), this, SLOT(slotReadyRead()));
+    connect(_reply, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(slotError(QNetworkReply::NetworkError)));
+    connect(_reply, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotSslErrors(QList<QSslError>)));
+}
+
 /*
 void QGameCore::setOrganization() {
     qDebug() << "QGameCore::setOrganization()";
