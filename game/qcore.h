@@ -16,7 +16,6 @@
 #include <QPair>
 #include <QUuid>
 #include <math.h>
-
 #include "qgamedictionary.h"
 
 class QGameCore : public QObject
@@ -76,7 +75,7 @@ protected:
     virtual void loadGameParameters();
     virtual void loadStatsParameters();
     virtual void loadOptionsParameters();
-    virtual void setOrganization() = 0;
+    void setOrganization(const QString &OrgName, const QString &AppName);
 
     QString _organizationName;
     QString _applicationName;

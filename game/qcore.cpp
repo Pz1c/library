@@ -255,3 +255,8 @@ QString QGameCore::proxyPass() {
 QString QGameCore::uuid() {
     return _UUID;
 }
+
+void QGameCore::setOrganization(const QString &OrgName, const QString &AppName) {
+    _organizationName = OrgName;
+    _applicationName = AppName;
+}
