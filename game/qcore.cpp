@@ -4,6 +4,7 @@ QGameCore::QGameCore(QObject *parent) :
     QObject(parent)
 {
     _requestIdx = 0;
+    _lastRequestGet = false;
 
     ignoredSslErrors.clear();
     ignoredSslErrors.append(QSslError(QSslError::CertificateSignatureFailed));
@@ -69,7 +70,20 @@ void QGameCore::slotSslErrors(QList<QSslError> error_list) {
     qDebug() << "slotSslErrors " << error_list;
 }
 
+void QGameCore::resendLastRequest() {
+    if (_lastRequestType.compare("POST") == 0) {
+        sendPostRequest(_lastRequestUrl, _lastRequestData);
+    } else {
+        sendGetRequest(_lastRequestUrl);
+    }
+}
+
 void QGameCore::sendPostRequest(const QString &url, const QByteArray &data) {
+    _lastRequestType = "POST";
+    _lastRequestUrl = url;
+    _lastRequestData.clear();
+    _lastRequestData.append(data);
+
     QNetworkRequest request;
     request.setUrl(QUrl(url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/x-www-form-urlencoded"));
@@ -83,6 +97,10 @@ void QGameCore::sendPostRequest(const QString &url, const QByteArray &data) {
 }
 
 void QGameCore::sendGetRequest(const QString &url) {
+    _lastRequestType = "GET";
+    _lastRequestUrl = url;
+    _lastRequestData.clear();
+
     QNetworkRequest request;
     request.setUrl(QUrl(url));
     request.setSslConfiguration(QSslConfiguration::defaultConfiguration());

@@ -57,7 +57,7 @@ protected slots:
 
     void sendPostRequest(const QString &url, const QByteArray &data);
     void sendGetRequest(const QString &url);
-
+    void resendLastRequest();
 protected:
     void init();
     void setProxySettings(QString IP, int Port, QString Username, QString Password);
@@ -101,6 +101,9 @@ protected:
     QNetworkReply *_reply;
     QNetworkProxy _proxy;
     QList<QSslError> ignoredSslErrors;
+    QString _lastRequestType;
+    QString _lastRequestUrl;
+    QByteArray _lastRequestData;
 
     void applyProxySettings();
     void saveRequest(QString &data);
