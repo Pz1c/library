@@ -4,7 +4,6 @@ QGameCore::QGameCore(QObject *parent) :
     QObject(parent)
 {
     _requestIdx = 0;
-    _lastRequestGet = false;
 
     ignoredSslErrors.clear();
     ignoredSslErrors.append(QSslError(QSslError::CertificateSignatureFailed));
