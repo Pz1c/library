@@ -83,6 +83,8 @@ protected:
     // dictionary
     QGameDictionary *GameDictionary;
 
+    // network
+    int _httpResponceCode;
 protected:
 
     // system

@@ -34,6 +34,7 @@ void QGameCore::saveRequest(QString &data) {
     QFile file(file_name);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     QTextStream out(&file);
+    out << "<!-- " << QString::number(_httpResponceCode) << " " << _lastRequestType << " " << _lastRequestUrl << " " << _lastRequestData << " -->\n";
     out << data;
     file.close();
     qDebug() << "data stored into " << file_name;
@@ -82,6 +83,8 @@ void QGameCore::sendPostRequest(const QString &url, const QByteArray &data) {
     _lastRequestUrl = url;
     _lastRequestData.clear();
     _lastRequestData.append(data);
+    _httpResponceCode = 0;
+    saveRequest(_lastRequestUrl);
 
     QNetworkRequest request;
     request.setUrl(QUrl(url));
@@ -99,6 +102,8 @@ void QGameCore::sendGetRequest(const QString &url) {
     _lastRequestType = "GET";
     _lastRequestUrl = url;
     _lastRequestData.clear();
+    _httpResponceCode = 0;
+    saveRequest(_lastRequestUrl);
 
     QNetworkRequest request;
     request.setUrl(QUrl(url));
