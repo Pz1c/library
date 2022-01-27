@@ -4,6 +4,7 @@ QGameCore::QGameCore(QObject *parent) :
     QObject(parent)
 {
     _requestIdx = 0;
+    _request_code = "dda";
 
     ignoredSslErrors.clear();
     ignoredSslErrors.append(QSslError(QSslError::CertificateSignatureFailed));
@@ -17,6 +18,7 @@ QGameCore::QGameCore(QObject *parent) :
 
 QGameCore::~QGameCore() {
     settings->sync();
+    settings->deleteLater();
 }
 
 void QGameCore::init() {
@@ -28,9 +30,9 @@ void QGameCore::init() {
 
 
 void QGameCore::saveRequest(QString &data) {
-    qDebug() << "QGameCore::saveRequest" << data.length();
+    qDebug() << "QGameCore::saveRequest" << data.length() << _httpResponceCode << _lastRequestType << _lastRequestUrl;
 #ifdef QT_DEBUG
-    QString file_name = QString("dda_request_%1.html").arg(QString::number(++_requestIdx));
+    QString file_name = QString("%1_request_%2.html").arg(_request_code, QString::number(++_requestIdx));
     QFile file(file_name);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     QTextStream out(&file);
@@ -41,7 +43,7 @@ void QGameCore::saveRequest(QString &data) {
 #endif
 }
 
-bool QGameCore::isLoading(){
+bool QGameCore::isLoading() {
     return _isLoading;
 }
 
@@ -160,7 +162,7 @@ void QGameCore::saveParameters(bool user, bool proxy, bool game, bool stats, boo
         settings->beginGroup("Options");
         saveOptionsParameters();
         settings->endGroup();
-    }
+    }    
 }
 
 void QGameCore::loadParameters() {

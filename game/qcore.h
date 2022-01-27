@@ -15,7 +15,7 @@
 #include <QList>
 #include <QPair>
 #include <QUuid>
-#include <math.h>
+//#include <math.h>
 #include "qgamedictionary.h"
 
 class QGameCore : public QObject
@@ -89,6 +89,7 @@ protected:
 
     // system
     QString _UUID;
+    QString _request_code;
 
     // proxy
     QString _proxyHost;
