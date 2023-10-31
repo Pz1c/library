@@ -9,7 +9,7 @@ QGameDictionary::QGameDictionary(QObject *parent) :
 
     if (lang.isEmpty()) {
         QLocale *locale = new QLocale();
-        int c = locale->country();
+        int c = locale->territory();
         delete locale;
 
         if (c == 222) { // Ukraine
