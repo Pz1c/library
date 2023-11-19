@@ -19,6 +19,14 @@ void QGameUtils::initRand(uint seed) {
     //QRandomGenerator::global()->seed(_seed);
 }
 
+int QGameUtils::getCurrTimestamp2021() {
+    return static_cast<int>(QDateTime::currentSecsSinceEpoch() - SECONDS_AT_20210901);
+}
+
+int QGameUtils::getTs20021DIffInSec(int ts) {
+    return static_cast<int>(getCurrTimestamp2021() - ts);
+}
+
 int QGameUtils::rand(int min, int max) {
     return qFloor(QRandomGenerator::global()->generateDouble() * ((max + 1) - min) + min);
 }
